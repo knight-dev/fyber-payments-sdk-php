@@ -1,0 +1,92 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div style="text-align: center; padding: 4rem 0;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Fyber PHP SDK Demo</h1>
+    <p style="font-size: 1.25rem; color: var(--gray-500); margin-bottom: 2rem;">
+        Example application demonstrating the Fyber PHP SDK with Slim Framework
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/hosted-checkout" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.125rem;">
+            Hosted Checkout (Recommended)
+        </a>
+        <a href="/checkout" class="btn btn-secondary" style="padding: 1rem 2rem; font-size: 1.125rem;">
+            Direct Checkout
+        </a>
+        <a href="/customers" class="btn btn-secondary" style="padding: 1rem 2rem; font-size: 1.125rem;">
+            Manage Customers
+        </a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+    <div class="card" style="border: 2px solid var(--primary);">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <h3 class="card-title" style="margin-bottom: 0;">Hosted Checkout</h3>
+            <span class="badge badge-info">Recommended</span>
+        </div>
+        <p class="text-muted">
+            Redirect customers to Fyber's secure hosted checkout page.
+            Handles 3DS, PCI compliance, and card data securely.
+        </p>
+        <a href="/hosted-checkout" class="btn btn-primary mt-4">Try Hosted Checkout</a>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Direct Checkout</h3>
+        <p class="text-muted">
+            Accept payments with multiple intents: sale, authorize, and verify.
+            Full 3D Secure support included.
+        </p>
+        <a href="/checkout" class="btn btn-secondary mt-4">Try Direct Checkout</a>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Customer Management</h3>
+        <p class="text-muted">
+            Create, update, and manage customer records.
+            Link payments to customers for tracking.
+        </p>
+        <a href="/customers" class="btn btn-primary mt-4">View Customers</a>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Webhook Events</h3>
+        <p class="text-muted">
+            Receive and process webhook events for payment status updates,
+            refunds, and customer changes.
+        </p>
+        <a href="/webhooks" class="btn btn-primary mt-4">View Events</a>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <h3 class="card-title">Test Cards</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Card Number</th>
+                <th>Result</th>
+                <th>CVV</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>4242 4242 4242 4242</code></td>
+                <td><span class="badge badge-success">Success</span></td>
+                <td>Any 3 digits</td>
+            </tr>
+            <tr>
+                <td><code>4000 0000 0000 0002</code></td>
+                <td><span class="badge badge-danger">Decline</span></td>
+                <td>Any 3 digits</td>
+            </tr>
+            <tr>
+                <td><code>4000 0027 6000 3184</code></td>
+                <td><span class="badge badge-warning">3DS Required</span></td>
+                <td>Any 3 digits</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

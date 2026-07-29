@@ -1,0 +1,60 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h1 style="margin-bottom: 1.5rem;">Hosted Checkout</h1>
+
+    <div class="alert alert-success" style="margin-bottom: 1.5rem;">
+        <strong>Recommended Approach</strong>: Hosted checkout redirects customers to a Fyber-hosted payment page.
+        This handles 3DS, PCI compliance, and card data securely without your server touching sensitive card information.
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/hosted-checkout" class="card">
+        <h3 class="card-title">Session Details</h3>
+
+        <div class="form-group">
+            <label>Amount (JMD)</label>
+            <input type="number" name="amount" class="form-control"
+                   value="{{ data.amount ?? defaultAmount }}" step="0.01" min="1" required>
+        </div>
+
+        <div class="form-group">
+            <label>Description (optional)</label>
+            <input type="text" name="description" class="form-control"
+                   placeholder="Demo Payment"
+                   value="{{ data.description ?? '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Customer Name</label>
+            <input type="text" name="customer_name" class="form-control"
+                   value="{{ data.customer_name ?? defaultName }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Customer Email</label>
+            <input type="email" name="customer_email" class="form-control"
+                   value="{{ data.customer_email ?? defaultEmail }}" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+            Continue to Fyber Checkout
+        </button>
+    </form>
+
+    <div class="card">
+        <h4 style="font-size: 1rem; margin-bottom: 0.5rem;">How It Works</h4>
+        <ol style="margin-left: 1.25rem; color: var(--gray-500);">
+            <li style="margin-bottom: 0.5rem;">Create a checkout session with the order details</li>
+            <li style="margin-bottom: 0.5rem;">Customer is redirected to Fyber's hosted checkout page</li>
+            <li style="margin-bottom: 0.5rem;">Customer enters payment details securely on Fyber's page</li>
+            <li style="margin-bottom: 0.5rem;">After payment, customer is redirected back to your site</li>
+            <li>Verify the session status and fulfill the order</li>
+        </ol>
+    </div>
+</div>
+{% endblock %}

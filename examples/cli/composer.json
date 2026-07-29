@@ -1,0 +1,17 @@
+{
+    "name": "fyber/sdk-php-examples",
+    "description": "CLI examples for Fyber PHP SDK",
+    "type": "project",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.1",
+        "fyber/sdk-php": "dev-main",
+        "vlucas/phpdotenv": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fyber\\Examples\\": "src/"
+        }
+    }
+}

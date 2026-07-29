@@ -1,0 +1,56 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; text-align: center;">
+    <div class="card" style="padding: 3rem;">
+        <div style="width: 80px; height: 80px; background: #d1fae5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+
+        <h1 style="font-size: 1.75rem; margin-bottom: 0.5rem; color: #065f46;">Payment Successful!</h1>
+        <p class="text-muted" style="margin-bottom: 1.5rem;">Your payment has been processed successfully.</p>
+
+        {% if payment %}
+        <div style="background: var(--gray-50); padding: 1.5rem; border-radius: 0.5rem; text-align: left; margin-bottom: 1.5rem;">
+            <table style="width: 100%;">
+                <tr>
+                    <td class="text-muted">Payment ID</td>
+                    <td style="text-align: right;"><code>{{ payment.id }}</code></td>
+                </tr>
+                <tr>
+                    <td class="text-muted">Status</td>
+                    <td style="text-align: right;">
+                        <span class="badge badge-success">{{ payment.status }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-muted">Amount</td>
+                    <td style="text-align: right;">
+                        <strong>${{ '%.2f'|format(payment.amount / 100) }} {{ payment.currency }}</strong>
+                    </td>
+                </tr>
+                {% if payment.intent %}
+                <tr>
+                    <td class="text-muted">Intent</td>
+                    <td style="text-align: right;">{{ payment.intent }}</td>
+                </tr>
+                {% endif %}
+                {% if payment.captured is defined %}
+                <tr>
+                    <td class="text-muted">Captured</td>
+                    <td style="text-align: right;">{{ payment.captured ? 'Yes' : 'No' }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+        {% endif %}
+
+        <div class="flex gap-2 justify-center">
+            <a href="/checkout" class="btn btn-primary">Make Another Payment</a>
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div class="flex justify-between items-center mb-4">
+        <h1>Customer Details</h1>
+        <a href="/customers" class="btn btn-secondary">Back to List</a>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <div class="card">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.25rem;">Customer ID</p>
+                <code>{{ customer.id }}</code>
+            </div>
+            <div>
+                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.25rem;">Email</p>
+                <strong>{{ customer.email }}</strong>
+            </div>
+            <div>
+                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.25rem;">Name</p>
+                <strong>{{ customer.name ?? '-' }}</strong>
+            </div>
+            <div>
+                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.25rem;">Phone</p>
+                <strong>{{ customer.phone ?? '-' }}</strong>
+            </div>
+            {% if customer.createdAt %}
+            <div>
+                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.25rem;">Created</p>
+                <strong>{{ customer.createdAt|date('Y-m-d H:i:s') }}</strong>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Update Customer</h3>
+        <form method="POST" action="/customers/{{ customer.id }}">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" class="form-control"
+                           value="{{ customer.name ?? '' }}"
+                           placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" name="phone" class="form-control"
+                           value="{{ customer.phone ?? '' }}"
+                           placeholder="+1-876-555-0100">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+
+    {% if payments|length > 0 %}
+    <div class="card">
+        <h3 class="card-title">Recent Payments</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td><code>{{ payment.id }}</code></td>
+                    <td>${{ '%.2f'|format(payment.amount / 100) }} {{ payment.currency }}</td>
+                    <td>
+                        {% set statusClass = 'info' %}
+                        {% if payment.status == 'completed' %}
+                            {% set statusClass = 'success' %}
+                        {% elseif payment.status == 'failed' %}
+                            {% set statusClass = 'danger' %}
+                        {% endif %}
+                        <span class="badge badge-{{ statusClass }}">{{ payment.status }}</span>
+                    </td>
+                    <td class="text-muted">
+                        {% if payment.createdAt %}
+                            {{ payment.createdAt|date('Y-m-d') }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="card" style="background: #fef2f2; border: 1px solid #fecaca;">
+        <h3 class="card-title" style="color: #991b1b;">Danger Zone</h3>
+        <p class="text-muted mb-4">Deleting a customer cannot be undone.</p>
+        <form method="POST" action="/customers/{{ customer.id }}/delete"
+              onsubmit="return confirm('Are you sure you want to delete this customer?');">
+            <button type="submit" class="btn btn-danger">Delete Customer</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

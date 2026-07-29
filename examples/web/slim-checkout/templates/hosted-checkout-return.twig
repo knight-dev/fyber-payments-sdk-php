@@ -1,0 +1,95 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; text-align: center;">
+    {% if success %}
+    <div style="font-size: 4rem; color: var(--success); background: #d1fae5; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+        &#10003;
+    </div>
+    <h1>Payment Successful!</h1>
+    <p class="text-muted">Your checkout session has been completed.</p>
+    {% else %}
+    <div style="font-size: 4rem; color: var(--warning); background: #fef3c7; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+        !
+    </div>
+    <h1>Payment Status: {{ session.status }}</h1>
+    <p class="text-muted">The checkout session is not complete.</p>
+    {% endif %}
+
+    <div class="card" style="text-align: left; margin-top: 2rem;">
+        <h3 class="card-title">Session Details</h3>
+        <table>
+            <tr>
+                <th style="width: 40%;">Session ID</th>
+                <td><code>{{ session.sessionId }}</code></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>
+                    <span class="badge {% if session.status == 'complete' %}badge-success{% elseif session.status == 'open' %}badge-warning{% else %}badge-danger{% endif %}">
+                        {{ session.status }}
+                    </span>
+                </td>
+            </tr>
+            {% if session.amount %}
+            <tr>
+                <th>Amount</th>
+                <td>{{ (session.amount / 100)|number_format(2) }} {{ session.currency }}</td>
+            </tr>
+            {% endif %}
+            {% if session.paymentId %}
+            <tr>
+                <th>Payment ID</th>
+                <td><code>{{ session.paymentId }}</code></td>
+            </tr>
+            {% endif %}
+            {% if session.paymentStatus %}
+            <tr>
+                <th>Payment Status</th>
+                <td>
+                    <span class="badge {% if session.paymentStatus == 'succeeded' %}badge-success{% elseif session.paymentStatus == 'pending' %}badge-warning{% else %}badge-danger{% endif %}">
+                        {{ session.paymentStatus }}
+                    </span>
+                </td>
+            </tr>
+            {% endif %}
+            {% if session.customerEmail %}
+            <tr>
+                <th>Customer Email</th>
+                <td>{{ session.customerEmail }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>Mode</th>
+                <td>{{ session.mode }}</td>
+            </tr>
+            <tr>
+                <th>Created</th>
+                <td>{{ session.createdAt }}</td>
+            </tr>
+            {% if session.completedAt %}
+            <tr>
+                <th>Completed</th>
+                <td>{{ session.completedAt }}</td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+        <a href="/hosted-checkout" class="btn btn-primary">Try Another Payment</a>
+        <a href="/webhooks" class="btn btn-secondary">View Webhooks</a>
+    </div>
+
+    <div class="card" style="text-align: left; margin-top: 2rem;">
+        <h4 style="font-size: 1rem; margin-bottom: 0.5rem;">What happens next?</h4>
+        <p class="text-muted">In a production environment, you would:</p>
+        <ol style="margin-left: 1.25rem; color: var(--gray-500);">
+            <li style="margin-bottom: 0.5rem;">Listen for the <code>checkout.session.completed</code> webhook</li>
+            <li style="margin-bottom: 0.5rem;">Verify the session status via API (as shown above)</li>
+            <li style="margin-bottom: 0.5rem;">Fulfill the order or provide the service</li>
+            <li>Send a confirmation email to the customer</li>
+        </ol>
+    </div>
+</div>
+{% endblock %}

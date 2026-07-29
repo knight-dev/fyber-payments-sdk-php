@@ -1,0 +1,138 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h1 style="margin-bottom: 1.5rem;">Direct Checkout</h1>
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/checkout" class="card">
+        <h3 class="card-title">Payment Details</h3>
+
+        <div class="form-group">
+            <label>Payment Intent</label>
+            <select name="intent" class="form-control">
+                {% for value, label in intents %}
+                <option value="{{ value }}" {% if data.intent == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Amount (JMD)</label>
+            <input type="number" name="amount" class="form-control"
+                   value="{{ data.amount ?? '50.00' }}" step="0.01" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label>Card Number</label>
+            <input type="text" name="card_number" id="cardNumber" class="form-control"
+                   placeholder="4242 4242 4242 4242"
+                   value="{{ data.card_number ?? '' }}" required>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Expiry Month</label>
+                <select name="exp_month" id="expMonth" class="form-control" required>
+                    {% for m in 1..12 %}
+                    <option value="{{ m }}" {% if data.exp_month == m or (data.exp_month is not defined and m == 12) %}selected{% endif %}>
+                        {{ '%02d'|format(m) }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Expiry Year</label>
+                <select name="exp_year" id="expYear" class="form-control" required>
+                    {% set currentYear = "now"|date("Y") %}
+                    {% for y in currentYear..(currentYear + 10) %}
+                    <option value="{{ y }}" {% if data.exp_year == y or (data.exp_year is not defined and y == 2030) %}selected{% endif %}>
+                        {{ y }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>CVV</label>
+                <input type="text" name="cvv" id="cvv" class="form-control"
+                       placeholder="123" maxlength="4"
+                       value="{{ data.cvv ?? '' }}" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Cardholder Name</label>
+            <input type="text" name="name" class="form-control"
+                   value="{{ data.name ?? 'Test Customer' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control"
+                   value="{{ data.email ?? 'test@example.com' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Description (optional)</label>
+            <input type="text" name="description" class="form-control"
+                   placeholder="Order #12345"
+                   value="{{ data.description ?? '' }}">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+            Pay Now
+        </button>
+    </form>
+
+    <div class="card">
+        <h4 style="font-size: 1rem; margin-bottom: 0.5rem;">Test Cards</h4>
+        <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.5rem;">
+            Click a row to autofill the card number
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Card Number</th>
+                    <th>Brand</th>
+                    <th>Scenario</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for card in testCards %}
+                <tr class="test-card-row" data-card="{{ card.number }}" style="cursor: pointer;">
+                    <td><code>{{ card.number }}</code></td>
+                    <td>{{ card.brand }}</td>
+                    <td>{{ card.scenario }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.75rem;">
+            <strong>CVV:</strong> {{ cvvHint }}<br>
+            <strong>Expiry:</strong> {{ expiryHint }}
+        </p>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.test-card-row').forEach(row => {
+        row.addEventListener('click', () => {
+            document.getElementById('cardNumber').value = row.dataset.card;
+            document.getElementById('expMonth').value = '12';
+            document.getElementById('expYear').value = '2030';
+            document.getElementById('cvv').value = '123';
+        });
+        row.addEventListener('mouseenter', () => {
+            row.style.backgroundColor = 'var(--gray-100)';
+        });
+        row.addEventListener('mouseleave', () => {
+            row.style.backgroundColor = '';
+        });
+    });
+</script>
+{% endblock %}

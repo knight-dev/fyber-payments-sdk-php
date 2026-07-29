@@ -1,0 +1,37 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; text-align: center;">
+    <div class="card" style="padding: 3rem;">
+        <div style="width: 80px; height: 80px; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+
+        <h1 style="font-size: 1.75rem; margin-bottom: 0.5rem;">3D Secure Verification Required</h1>
+        <p class="text-muted" style="margin-bottom: 1.5rem;">
+            Your bank requires additional authentication to complete this payment.
+        </p>
+
+        {% if payment %}
+        <div style="background: var(--gray-50); padding: 1rem; border-radius: 0.5rem; text-align: left; margin-bottom: 1.5rem;">
+            <p class="text-muted" style="margin-bottom: 0.5rem;">Payment ID: <code>{{ payment.id }}</code></p>
+            <p class="text-muted" style="margin-bottom: 0;">
+                Amount: <strong>${{ '%.2f'|format(payment.amount / 100) }} {{ payment.currency }}</strong>
+            </p>
+        </div>
+        {% endif %}
+
+        {% if redirectUrl %}
+        <a href="{{ redirectUrl }}" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+            Continue to Bank Verification
+        </a>
+        {% else %}
+        <p class="text-muted">Redirect URL not available. Please try again.</p>
+        <a href="/checkout" class="btn btn-secondary">Back to Checkout</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
